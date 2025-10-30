@@ -7,10 +7,22 @@ import shutil
 from huggingface_hub import login
 import re
 import json
+import boto3
 
 # -----------------------------
 # Cargar variables de entorno
 load_dotenv()
+
+# Configurar S3 client
+aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
+aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
+aws_region = os.getenv("AWS_REGION", "eu-north-1")
+
+s3 = boto3.client(
+    "s3",
+    aws_access_key_id=aws_access_key,
+    aws_secret_access_key=aws_secret_key,
+    region_name=aws_region
 
 # Configurar API key de Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -22,6 +34,11 @@ genai.configure(api_key=GOOGLE_API_KEY)
 HF_API_KEY = os.getenv("HUGGING_FACE_API_KEY")
 if not HF_API_KEY:
     raise ValueError("Falta HUGGING_FACE_API_KEY en .env")
+
+# Recuperar bucket de AWS
+S3_BUCKET = os.getenv("S3_BUCKET")  
+if not S3_BUCKET:
+    raise ValueError("Falta S3_BUCKET en .env")
 
 login(token=HF_API_KEY)
 
@@ -83,6 +100,10 @@ def cuento_a_json(cuento_texto: str) -> dict:
 
     return cuento_json
 
+def subir_a_s3(local_path, bucket, s3_key):
+    s3.upload_file(local_path, bucket, s3_key)
+    print(f"Archivo subido: s3://{bucket}/{s3_key}")
+
 # -----------------------------
 # MAIN
 # -----------------------------
@@ -123,16 +144,20 @@ try:
     cuento_dir = os.path.join(OUTPUT_DIR, f"cuento_storybook_{str(known)}")
     os.makedirs(cuento_dir, exist_ok=True)
 
-    cuento_path = os.path.join(cuento_dir, "cuento.txt")
+    cuento_path = os.path.join(cuento_dir, f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.txt")
     with open(cuento_path, "w", encoding="utf-8") as f:        
         f.write("--- Cuento ---\n")
         f.write(cuento_texto if cuento_texto else "Sin contenido generado.")
         f.write("\n-----------------\n")
 
     # Guardar JSON
-    cuento_json_path = os.path.join(cuento_dir, "cuento.json")
+    cuento_json_path = os.path.join(cuento_dir, f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.json")
     with open(cuento_json_path, "w", encoding="utf-8") as f:
         json.dump(cuento_json, f, ensure_ascii=False, indent=2)
+
+    # subir archivos generados
+    subir_a_s3(cuento_path, S3_BUCKET, f"cuentos/{os.path.basename(cuento_path)}")
+    subir_a_s3(cuento_json_path, S3_BUCKET, f"cuentos/{os.path.basename(cuento_json_path)}")
 
     # Registrar tiempos
     fin_tiempo = time.perf_counter()
