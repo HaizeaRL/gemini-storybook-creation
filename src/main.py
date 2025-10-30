@@ -13,6 +13,7 @@ import boto3
 # Cargar variables de entorno
 load_dotenv()
 
+
 # Configurar S3 client
 aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
@@ -23,6 +24,7 @@ s3 = boto3.client(
     aws_access_key_id=aws_access_key,
     aws_secret_access_key=aws_secret_key,
     region_name=aws_region
+)
 
 # Configurar API key de Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -144,14 +146,14 @@ try:
     cuento_dir = os.path.join(OUTPUT_DIR, f"cuento_storybook_{str(known)}")
     os.makedirs(cuento_dir, exist_ok=True)
 
-    cuento_path = os.path.join(cuento_dir, f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.txt")
+    cuento_path = os.path.join(cuento_dir,  f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.txt")
     with open(cuento_path, "w", encoding="utf-8") as f:        
         f.write("--- Cuento ---\n")
         f.write(cuento_texto if cuento_texto else "Sin contenido generado.")
         f.write("\n-----------------\n")
 
     # Guardar JSON
-    cuento_json_path = os.path.join(cuento_dir, f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.json")
+    cuento_json_path = os.path.join(cuento_dir,  f"cuento_{name.replace(' ', '-')}_{company.replace(' ', '-')}.json")
     with open(cuento_json_path, "w", encoding="utf-8") as f:
         json.dump(cuento_json, f, ensure_ascii=False, indent=2)
 
@@ -162,14 +164,8 @@ try:
     # Registrar tiempos
     fin_tiempo = time.perf_counter()
     duracion = round(fin_tiempo - inicio_tiempo, 2)
-    log_path = os.path.join(OUTPUT_DIR, "tiempos_generacion.csv")
-    if not os.path.exists(log_path):
-        with open(log_path, "w", encoding="utf-8") as log:
-            log.write("Duracion_s\n")
-    with open(log_path, "a", encoding="utf-8") as log:
-        log.write(f"{duracion}\n")
 
-    print(f"\nCuento guardado en: {cuento_dir}. Tiempo necesitado {duracion} segundos.\n")
+    print(f"\nTiempo necesitado para crear cuento: {duracion} segundos.\n")
 
 except Exception as e:
     print(f"Ocurrió un error en la creación del cuento: {e}")
