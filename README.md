@@ -21,7 +21,7 @@ The service is containerized with `Docker` and deployed on an `AWS EC2 instance`
 
 - Logs are captured in real time and sent to **AWS CloudWatch**.
 
-- Exposed through a **POST API endpoint** for story generation requests.
+- Exposed through a **GET API endpoint** for story generation requests.
 
 ## Project Structure
 
@@ -57,7 +57,7 @@ docker run -d -p 5000:5000 -v /home/ec2-user/app/logs:/usr/local/app/logs --env-
 ## Postman Request
 
 ```
-POST http://<EC2-IP>:5000/generar-cuento
+GET http://<EC2-IP>:5000/generar-cuento
 HEADER: key = Content-Type  Value = application/json
 BODY: 
 {
