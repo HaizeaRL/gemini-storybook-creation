@@ -1,7 +1,7 @@
 # gemini-storybook-creation
 
-  **Author**: Haizea Rumayor Lazkano
-  **Last update**: October 2025
+  - **Author**: Haizea Rumayor Lazkano
+  - **Last update**: October 2025
 
 ------------------------------------------------------------------------
 
