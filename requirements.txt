@@ -12,4 +12,8 @@ langchain-google-genai==2.0.4
 huggingface-hub>=0.24.0
 
 # AWS
-boto3==1.35.0
+boto3==1.35.0 # s3
+awscli>=1.32.0 # cloudWatch
+
+# Web server
+Flask>=2.3.3

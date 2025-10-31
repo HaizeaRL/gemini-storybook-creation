@@ -12,6 +12,12 @@ RUN pip install --upgrade pip \
 # Copiar código fuente
 COPY . .
 
+# Crea carpeta de logs en el contenedor
+RUN mkdir -p /home/ec2-user/app/logs
+
+# Exponemos puerto para poder llamar desde fuera
+EXPOSE 5000
+
 # Set the default command
 CMD ["python", "src/main.py"]
 
