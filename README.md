@@ -42,7 +42,7 @@ This project is designed for deployment on **AWS**.
 An **EC2 instance** is used to host the service, with **Docker** and **CloudWatch agents** installed and configured.
 The instance must have the appropriate IAM permissions to write logs to **CloudWatch** and store files in **S3**.
 
-Once deployed, the service can be accessed through a **POST API request** that sends user and event data, triggering the automatic generation of a personalized storybook.
+Once deployed, the service can be accessed through a **GET API request** that sends user and event data, triggering the automatic generation of a personalized storybook.
 
 
 ## Execution
