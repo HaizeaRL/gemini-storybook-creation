@@ -186,7 +186,7 @@ def generar_storybook(params):
 # -----------------------------
 # Endpoint POST
 # -----------------------------
-@app.route("/generar-cuento", methods=["POST"])
+@app.route("/generar-cuento", methods=["GET"])
 def generate():
     params = request.json
     if not params:
