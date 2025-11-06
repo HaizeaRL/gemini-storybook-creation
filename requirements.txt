@@ -9,7 +9,6 @@ tqdm>=4.66.0
 google-generativeai==0.8.3
 langchain==0.3.3
 langchain-google-genai==2.0.4
-huggingface-hub>=0.24.0
 
 # AWS
 boto3==1.35.0 # s3
