@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 import google.generativeai as genai  # Para API key Gemini
 import time
 import shutil
-from huggingface_hub import login
 import re
 import json
 import boto3
@@ -52,17 +51,10 @@ if not GOOGLE_API_KEY:
     raise ValueError("Falta GOOGLE_API_KEY en .env")
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Configurar HuggingFace API key
-HF_API_KEY = os.getenv("HUGGING_FACE_API_KEY")
-if not HF_API_KEY:
-    raise ValueError("Falta HUGGING_FACE_API_KEY en .env")
-
 # Recuperar bucket de AWS
 S3_BUCKET = os.getenv("S3_BUCKET")  
 if not S3_BUCKET:
     raise ValueError("Falta S3_BUCKET en .env")
-
-login(token=HF_API_KEY)
 
 # -----------------------------
 # Funciones
