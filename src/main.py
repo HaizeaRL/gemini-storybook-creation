@@ -73,7 +73,7 @@ def generate_prompt(params):
 
     if known == 1:        
         prompt = (
-            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas acerca con el siguiente guion: "
+            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas con el siguiente guion: "
             f"La historia se basa en {name} que trabaja en {company} con el cargo de {funcion} en el departamento de {area}. "
             f"Su problema es que tiene muchos gastos acumulados y necesita una solución para digitalizarlos porque la gestión manual le lleva demasiado tiempo. "
             f"Un día escucha hablar del congreso {event} de {place} y decide acudir. Allí conoce la solución de la empresa Sabbatic. "
@@ -83,7 +83,7 @@ def generate_prompt(params):
         )
     else:
         prompt = (
-            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas acerca con el siguiente guion: "
+            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas con el siguiente guion: "
             f"La historia se basa en {name} que trabaja en {company}. "
             f"Su problema es que tiene muchos gastos acumulados y necesita una solución para digitalizarlos porque la gestión manual le lleva demasiado tiempo. "
             f"Un día escucha hablar del congreso {event} de {place} y decide acudir. Allí conoce la solución de la empresa Sabbatic."
