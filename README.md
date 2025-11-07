@@ -57,18 +57,7 @@ docker run -d -p 5000:5000 -v /home/ec2-user/app/logs:/usr/local/app/logs --env-
 ## Postman Request
 
 ```
-GET http://<EC2-IP>:5000/generar-cuento
-HEADER: key = Content-Type  Value = application/json
-BODY: 
-{
-  "KNOWN": 1,
-  "NAME": "xxxx",
-  "COMPANY": "xxxx",
-  "FUNCTION": "xxxx",
-  "AREA": "xxxx",
-  "EVENT": "xxxxn",
-  "PLACE": "xxxx"
-}
+GET http://<EC2-IP>5000/generar-cuento?NAME=Ana&COMPANY=Sabbatic&FUNCTION=Directora&AREA=Finanzas&EVENT=TechFest&PLACE=Bilbao&KNOWN=1
 ```
 
 ## Responds
