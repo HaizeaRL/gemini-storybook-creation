@@ -38,6 +38,8 @@ aws_access_key = os.getenv("AWS_ACCESS_KEY_ID")
 aws_secret_key = os.getenv("AWS_SECRET_ACCESS_KEY")
 aws_region = os.getenv("AWS_REGION", "eu-north-1")
 
+
+
 s3 = boto3.client(
     "s3",
     aws_access_key_id=aws_access_key,
@@ -71,7 +73,7 @@ def generate_prompt(params):
 
     if known == 1:        
         prompt = (
-            f"Crea texto de un storybook corto de 8 páginas acerca con el siguiente guion: "
+            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas acerca con el siguiente guion: "
             f"La historia se basa en {name} que trabaja en {company} con el cargo de {funcion} en el departamento de {area}. "
             f"Su problema es que tiene muchos gastos acumulados y necesita una solución para digitalizarlos porque la gestión manual le lleva demasiado tiempo. "
             f"Un día escucha hablar del congreso {event} de {place} y decide acudir. Allí conoce la solución de la empresa Sabbatic. "
@@ -81,7 +83,7 @@ def generate_prompt(params):
         )
     else:
         prompt = (
-            f"Crea texto de un storybook corto de 8 páginas acerca con el siguiente guion: "
+            f"Crea texto de un storybook corto de {os.getenv('STORY_PAGES', 5)} páginas acerca con el siguiente guion: "
             f"La historia se basa en {name} que trabaja en {company}. "
             f"Su problema es que tiene muchos gastos acumulados y necesita una solución para digitalizarlos porque la gestión manual le lleva demasiado tiempo. "
             f"Un día escucha hablar del congreso {event} de {place} y decide acudir. Allí conoce la solución de la empresa Sabbatic."
@@ -92,29 +94,35 @@ def generate_prompt(params):
     return prompt
 
 def cuento_a_json(cuento_texto: str) -> dict:
-    """Convierte el texto generado de un cuento en formato JSON con título y páginas."""
+    """Convierte el texto generado de un cuento en formato JSON con título y páginas limpias."""
     
+    # Buscar título
     titulo_match = re.search(r'^(?:##|\*\*)\s*(?!Página\b)(.+)', cuento_texto, re.MULTILINE)
     if titulo_match:
         titulo = titulo_match.group(1).strip(" *")
     else:
         titulo = "La transformación digital que cambió todo: Descubriendo Sabbatic"
 
+    # Separar las páginas por el patrón de "Página X"
     paginas_raw = re.split(r'\*\*Página\s*\d+[:]*\s*\*\*', cuento_texto)
 
+    # Si la primera parte contiene el título o está vacía, se elimina
     if paginas_raw and (titulo in paginas_raw[0] or not paginas_raw[0].strip()):
         paginas_raw = paginas_raw[1:]
 
-    paginas = []
-    for i, pagina in enumerate(paginas_raw, start=1):
-        pagina = pagina.strip()
-        if pagina:
-            paginas.append({f"pagina{i}": pagina})
+    # Limpiar cada página
+    paginas_limpias = []
+    for pagina in paginas_raw:
+        # Quitar saltos de línea y espacios extra
+        texto_limpio = re.sub(r'\s+', ' ', pagina).strip()
+        # Solo añadir si no está vacía
+        if texto_limpio:
+            paginas_limpias.append(texto_limpio)
 
+    # Crear estructura JSON
     cuento_json = {
         "titulo": titulo,
-        "num_pag": len(paginas),
-        "paginas": paginas
+        "paginas": paginas_limpias
     }
 
     return cuento_json
@@ -176,13 +184,14 @@ def generar_storybook(params):
     return {"status": "ok", "duracion_segundos": duracion, "cuento_json": cuento_json}
 
 # -----------------------------
-# Endpoint POST
+# Endpoint GET
 # -----------------------------
 @app.route("/generar-cuento", methods=["GET"])
 def generate():
-    params = request.json
+    params = request.args.to_dict()
     if not params:
-        return jsonify({"error": "JSON inválido o vacío"}), 400
+        return jsonify({"error": "Faltan parámetros en la URL"}), 400
+    
     resultado = generar_storybook(params)
     return jsonify(resultado)
 
