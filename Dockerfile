@@ -19,5 +19,5 @@ RUN mkdir -p /home/ec2-user/app/logs
 EXPOSE 5000
 
 # Set the default command
-CMD ["python", "src/main.py"]
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "src.main:app"]
 
