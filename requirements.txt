@@ -17,3 +17,4 @@ awscli>=1.32.0 # cloudWatch
 # Web server
 Flask>=2.3.3
 gunicorn>=21.2.0
+flask-cors>=4.0.0
