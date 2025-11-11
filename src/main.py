@@ -9,6 +9,7 @@ import json
 import boto3
 import logging
 from flask import Flask, request, jsonify
+from flask_cors import cross_origin
 
 # -----------------------------
 # Cargar variables de entorno
@@ -187,6 +188,7 @@ def generar_storybook(params):
 # Endpoint GET
 # -----------------------------
 @app.route("/generar-cuento", methods=["GET"])
+@cross_origin()
 def generate():
     params = request.args.to_dict()
     if not params:
